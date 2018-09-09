@@ -30,26 +30,24 @@ $(function () {
         }
         else {
             error_check = true;
-            $(this).siblings('span').html('请勾选同意');
-            $(this).siblings('span').show();
+            $(this).siblings('span').html('请勾选同意').show();
         }
     });
 
 
     function check_user_name() {
-        var len = $('#user_name').val().length;
+        var $user_name=$('#user_name');
+        var len = $user_name.val().length;
         if (len < 5 || len > 20) {
-            $('#user_name').next().html('请输入5-20个字符的用户名')
-            $('#user_name').next().show();
+            $user_name.next().html('请输入5-20个字符的用户名').show();
             error_name = true;
         } else {
-            $.get('/user/register_check/?username=' + $('#user_name').val(), function (data, textStatus) {
+            $.get('/user/register_check/?username=' + $user_name.val(), function (data, textStatus) {
                 if (data.count === 1) {
-                    $('#user_name').next().html('用户名已经存在')
-                    $('#user_name').next().show();
+                    $user_name.next().html('用户名已经存在').show();
                     error_name = true;
                 } else {
-                    $('#user_name').next().hide();
+                    $user_name.next().hide();
                     error_name = false;
                 }
             }, "json");
@@ -57,45 +55,46 @@ $(function () {
     }
 
     function check_pwd() {
-        var len = $('#pwd').val().length;
+        var $pws=$('#pwd');
+        var len = $pws.val().length;
         if (len < 8 || len > 20) {
-            $('#pwd').next().html('密码最少8位，最长20位')
-            $('#pwd').next().show();
+            $pws.next().html('密码最少8位，最长20位').show();
             error_password = true;
         }
         else {
-            $('#pwd').next().hide();
+            $pws.next().hide();
             error_password = false;
         }
     }
 
 
     function check_cpwd() {
-        var pass = $('#pwd').val();
-        var cpass = $('#cpwd').val();
+        var $pwd=$('#pwd');
+        var $cpwd=$('#cpwd');
+        var pass = $pwd.val();
+        var cpass = $cpwd.val();
 
-        if (pass != cpass) {
-            $('#cpwd').next().html('两次输入的密码不一致')
-            $('#cpwd').next().show();
+        if (pass !== cpass) {
+            $pwd.next().html('两次输入的密码不一致').show();
             error_check_password = true;
         }
         else {
-            $('#cpwd').next().hide();
+            $cpwd.next().hide();
             error_check_password = false;
         }
 
     }
 
     function check_email() {
-        var re = /^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
+        var $email=$('#email');
+        var re = /^[a-z0-9][\w.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
 
-        if (re.test($('#email').val())) {
-            $('#email').next().hide();
+        if (re.test($email.val())) {
+            $email.next().hide();
             error_email = false;
         }
         else {
-            $('#email').next().html('你输入的邮箱格式不正确')
-            $('#email').next().show();
+            $email.next().html('你输入的邮箱格式不正确').show();
             error_check_password = true;
         }
 
@@ -108,12 +107,7 @@ $(function () {
         check_cpwd();
         check_email();
 
-        if (error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return error_name === false && error_password === false && error_check_password === false && error_email === false && error_check === false;
 
     });
-})
+});

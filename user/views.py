@@ -33,9 +33,10 @@ def login(request):
     error = 0
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('pwd')
-        remember = request.POST.get('remember', 0)
+        post = request.POST
+        username = post.get('username')
+        password = post.get('pwd')
+        remember = post.get('remember', 0)
 
         try:
             user = User.objects.get(username=username)
@@ -49,6 +50,7 @@ def login(request):
                 if remember != 0:
                     resp.set_cookie('username', user.username)
                 else:
+                    # delete cookie by setting a blank value
                     resp.set_cookie('username', '', max_age=-1)
                 # 减小页面显示时相关查询
                 request.session['user_id'] = user.id
@@ -56,7 +58,7 @@ def login(request):
                 return resp
             else:
                 error = 1
-
+        # pass username and password back once failed to login
         context = {'title': '用户登录', 'error': error, 'username': username, 'password': password}
         return render(request, 'user/login.html', context=context)
 
