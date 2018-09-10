@@ -105,9 +105,6 @@ target/
 # pyenv
 .python-version
 
-# pipenv
-Pipfile.lock
-
 # celery beat schedule file
 celerybeat-schedule
 
@@ -115,14 +112,16 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+.env
 .flaskenv
+.envrc
 
 # Spyder project settings
 .spyderproject
@@ -143,3 +142,4 @@ venv.bak/
 
 # IDE
 .idea/
+.vscode/
