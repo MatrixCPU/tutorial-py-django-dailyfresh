@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.http import JsonResponse, HttpResponseRedirect
 
 from .models import User, Contact
+from . import decorators
 
 
 def register(request):
@@ -46,7 +47,9 @@ def login(request):
 
         if user:
             if user.verify_password(password):
-                resp = HttpResponseRedirect(reverse('user:info'))
+                url = request.COOKIES.get('url', '/')  # or user:info?
+                resp = HttpResponseRedirect(url)
+                resp.delete_cookie('url')
                 if remember != 0:
                     resp.set_cookie('username', user.username)
                 else:
@@ -67,6 +70,13 @@ def login(request):
     return render(request, 'user/login.html', context=context)
 
 
+def logout(request):
+    request.session.flush()
+    # You may need to delete some cookies as well
+    return redirect('/')
+
+
+@decorators.login_required
 def info(request):
     user = get_object_or_404(User, id=request.session.get('user_id'))
     context = {
@@ -77,6 +87,7 @@ def info(request):
     return render(request, 'user/user_center_info.html', context=context)
 
 
+@decorators.login_required
 def order(request):
     context = {
         'title': '用户订单',
@@ -84,6 +95,7 @@ def order(request):
     return render(request, 'user/user_center_order.html', context=context)
 
 
+@decorators.login_required
 def address(request):
     user = get_object_or_404(User, id=request.session.get('user_id'))
     contact = user.contact_set.order_by('id').all()
