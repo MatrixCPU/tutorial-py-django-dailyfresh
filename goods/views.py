@@ -56,4 +56,20 @@ def detail(request, id):
     news = goods.category.goodsitem_set.order_by('-id')[0:2]
     context = {'title': goods.category.name,
                'g': goods, 'news': news, 'id': id}
-    return render(request, 'goods/detail.html', context)
+    response = render(request, 'goods/detail.html', context)
+
+    # record recente visited items
+    goods_ids = request.COOKIES.get('goods_ids', '')
+    current_id = str(goods.id)
+    if goods_ids:
+        goods_id_list = goods_ids.split(',')
+        if goods_id_list.count(current_id) >= 1:
+            goods_id_list.remove(current_id)
+        goods_id_list.insert(0, current_id)
+        if len(goods_id_list) >= 6:
+            del goods_id_list[5]
+        goods_ids = ','.join(goods_id_list)
+    else:
+        goods_ids = current_id
+    response.set_cookie('goods_ids', goods_ids)
+    return response

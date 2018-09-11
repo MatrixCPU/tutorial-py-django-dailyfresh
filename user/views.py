@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 
 from .models import User, Contact
 from . import decorators
+from goods.models import GoodsItem
 
 
 def register(request):
@@ -79,10 +80,19 @@ def logout(request):
 @decorators.login_required
 def info(request):
     user = get_object_or_404(User, id=request.session.get('user_id'))
+
+    # get recent visited items
+    goods_ids = request.COOKIES.get('goods_ids', '')
+    goods_id_list = goods_ids.split(',')
+    goods_list = []
+    for _ in goods_id_list:
+        goods_list.append(GoodsItem.objects.get(id=int(_)))
+
     context = {
         'title': '用户中心',
         'user_email': user.email,
         'user_name': request.session.get('user_name'),
+        'goods_list': goods_list,
     }
     return render(request, 'user/user_center_info.html', context=context)
 
