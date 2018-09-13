@@ -1,29 +1,43 @@
 {% extends 'goods/base.html' %}
 
 {% block head %}
+  {{ block.super }}
   <script>
-      function add() {
-          num = parseFloat($('.num_show').val());
-          $('.num_show').val(num + 1);
-          $('.num_show').blur();
-      }
-
-      function minus() {
-          num = parseFloat($('.num_show').val());
-          if(num<=1) {
-              return;
-          }
-          $('.num_show').val(num - 1);
-          $('.num_show').blur();
-      }
-
       $(function () {
-          $('.num_show').blur(function () {
-              num = parseInt($('.num_show').val());
-              price = parseFloat($('#gprice').text());
-              total = num * price;
-              $(this).val(num);
+          $('.num_show').blur(function (event) {
+              var num = parseInt($(this).val());
+              var price = parseFloat($('#gprice').text());
+              var total = num * price;
               $('#gtotal').text(total.toFixed(2) + '元');
+          });
+          $('.add.fr').click(function (event) {
+              var $num_ele = $('.num_show');
+              var $value = parseInt($num_ele.val());
+              $num_ele.val($value + 1);
+              $num_ele.blur();
+          });
+          $('.minus.fr').click(function (event) {
+              var $num_ele = $('.num_show');
+              var $value = parseInt($num_ele.val());
+              if ($value <= 1) {
+                  alert('请输出正确的数量！');
+              } else {
+                  $num_ele.val($value - 1);
+                  $num_ele.blur();
+              }
+          });
+
+          $('.buy_btn').click(function (event) {
+              if ($('.login_btn').text().indexOf('登录') >= 0) {
+                  alert('请先登录后再购买');
+                  location.href = '{% url "user:login" %}';
+                  return 0;
+              } else {
+                  var num = parseInt($('.num_show').val());
+                  $.get("{% url 'cart:add' %}?goods={{ g.id }}&count=" + num, function (data) {
+                      location.href = '/order/?cart_id=' + data.cart_id;
+                  });
+              }
           });
       });
   </script>
@@ -44,8 +58,8 @@
         <div class="num_name fl">数 量：</div>
         <div class="num_add fl">
           <input type="text" class="num_show fl" value="1">
-          <a href="javascript:add();" class="add fr">+</a>
-          <a href="javascript:minus();" class="minus fr">-</a>
+          <a href="javascript:;" class="add fr">+</a>
+          <a href="javascript:;" class="minus fr">-</a>
         </div>
       </div>
       <div class="total">总价：<em id="gtotal">{{ g.price }}元</em></div>
@@ -68,4 +82,48 @@
       {{ g.detail|safe }}
     </div>
   </div>
+
+  <div class="add_jump"></div>
+
+  <script type="text/javascript">
+      var $cart_btn = $('.add_cart');
+      var add_x = $cart_btn.offset().left;
+      var add_y = $cart_btn.offset().top;
+
+      var $show_count = $('#show_count');
+      var count_x = $show_count.offset().left;
+      var count_y = $show_count.offset().top;
+
+      $add_jump = $('.add_jump');
+      $add_jump.css({
+          'left': add_x + 80,
+          'top': add_y + 10,
+          'display': 'block'
+      });
+
+      $('#add_cart').click(function (event) {
+          if ($('.login_btn').text().indexOf('登录') >= 0) {
+              alert('请先登录后再购买');
+              location.href = '{% url "user:login" %}';
+              return 0;
+          } else {
+              $add_jump.stop().animate({
+                  'left': count_x + 7,
+                  'top': count_y + 7
+              }, 'slow').fadeOut('slow', function (event) {
+                  $(this).css({
+                      'left': add_x + 80,
+                      'top': add_y + 10,
+                      'display': 'block'
+                  });
+              });
+
+              var num = parseInt($('.num_show').val());
+              $.get("{% url 'cart:add' %}?goods={{ g.id }}&count=" + num, function (data) {
+                  $show_count.text(data.count);
+              });
+          }
+      });
+
+  </script>
 {% endblock detail2 %}

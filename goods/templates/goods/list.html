@@ -1,4 +1,18 @@
 {% extends 'goods/base.html' %}
+{% block head %}
+  {{ block.super }}
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $('a.add_goods').click(function (event) {
+              var goods_id = $(this).closest('li').attr('data-id');
+              $.getJSON("{% url 'cart:add' %}?count=1&goods=" + goods_id, function (data) {
+                  $show_count.text(data.count);
+              });
+          });
+      });
+  </script>
+
+{% endblock %}
 
 {% block detail %}
 
@@ -23,9 +37,9 @@
 
     <ul class="goods_type_list clearfix">
       {% for g in page %}
-        <li>
-          <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
-          <h4><a href="/{{ g.id }}/">{{ g.name }}</a></h4>
+        <li data-id="{{ g.id }}">
+          <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
+          <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name }}</a></h4>
           <div class="operate">
             <span class="prize">￥{{ g.price }}</span>
             <span class="unit">{{ g.unit }}</span>
@@ -39,7 +53,7 @@
     <div class="pagenation">
       {% if page.has_previous %}
         <a href="/list{{ typeinfo.id }}_{{ page.previous_page_number }}_{{ sort }}/">
-          <上一页
+          &lt;上一页
         </a>
       {% endif %}
 
@@ -52,7 +66,7 @@
       {% endfor %}
 
       {% if page.has_next %}
-        <a href="/list{{ typeinfo.id }}_{{ page.next_page_number }}_{{ sort }}/">下一页></a>
+        <a href="/list{{ typeinfo.id }}_{{ page.next_page_number }}_{{ sort }}/">下一页&gt;</a>
       {% endif %}
     </div>
   </div>

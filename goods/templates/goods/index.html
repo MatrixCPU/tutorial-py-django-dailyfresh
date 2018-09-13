@@ -1,8 +1,18 @@
 {% extends 'base_goods.html' %}
+{% load static %}
+
 {% block head %}
-  <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="/static/js/slide.js"></script>
-{% endblock head %}
+  <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/slide.js' %}"></script>
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $show_count=$('#show_count');
+          $.get("{% url 'cart:status' %}", function (data) {
+              $show_count.text(data.count);
+          });
+      });
+  </script>
+{% endblock %}
 
 {% block content %}
 
@@ -30,18 +40,18 @@
     </ul>
     <div class="slide fl">
       <ul class="slide_pics">
-        <li><img src="/static/images/slide.jpg" alt="幻灯片"></li>
-        <li><img src="/static/images/slide02.jpg" alt="幻灯片"></li>
-        <li><img src="/static/images/slide03.jpg" alt="幻灯片"></li>
-        <li><img src="/static/images/slide04.jpg" alt="幻灯片"></li>
+        <li><img src="{% static 'images/slide.jpg' %}" alt="幻灯片"></li>
+        <li><img src="{% static 'images/slide02.jpg' %}" alt="幻灯片"></li>
+        <li><img src="{% static 'images/slide03.jpg' %}" alt="幻灯片"></li>
+        <li><img src="{% static 'images/slide04.jpg' %}" alt="幻灯片"></li>
       </ul>
       <div class="prev"></div>
       <div class="next"></div>
       <ul class="points"></ul>
     </div>
     <div class="adv fl">
-      <a href="#"><img src="/static/images/adv01.jpg"></a>
-      <a href="#"><img src="/static/images/adv02.jpg"></a>
+      <a href="#"><img src="{% static 'images/adv01.jpg' %}"></a>
+      <a href="#"><img src="{% static 'images/adv02.jpg' %}"></a>
     </div>
   </div>
 
@@ -51,19 +61,19 @@
       <div class="subtitle fl">
         <span>|</span>
         {% for g in type01 %}
-          <a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a>
+          <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
       <a href="/list1_1_1/" class="goods_more fr" id="fruit_more">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
-      <div class="goods_banner fl"><img src="/static/images/banner01.jpg"></div>
+      <div class="goods_banner fl"><img src="{% static 'images/banner01.jpg' %}"></div>
       <ul class="goods_list fl">
         {% for g in type0 %}
           <li>
-            <h4><a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a></h4>
-            <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
+            <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a></h4>
+            <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
             <div class="prize">¥ {{ g.price }}</div>
           </li>
         {% endfor %}
@@ -77,19 +87,19 @@
       <div class="subtitle fl">
         <span>|</span>
         {% for g in type11 %}
-          <a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a>
+          <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
       <a href="/list2_1_1/" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
-      <div class="goods_banner fl"><img src="/static/images/banner02.jpg"></div>
+      <div class="goods_banner fl"><img src="{% static 'images/banner02.jpg' %}"></div>
       <ul class="goods_list fl">
         {% for g in type1 %}
           <li>
-            <h4><a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a></h4>
-            <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
+            <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a></h4>
+            <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
             <div class="prize">¥ {{ g.price }}</div>
           </li>
         {% endfor %}
@@ -103,19 +113,19 @@
       <div class="subtitle fl">
         <span>|</span>
         {% for g in type21 %}
-          <a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a>
+          <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
       <a href="/list3_1_1/" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
-      <div class="goods_banner fl"><img src="/static/images/banner03.jpg"></div>
+      <div class="goods_banner fl"><img src="{% static 'images/banner03.jpg' %}"></div>
       <ul class="goods_list fl">
         {% for g in type2 %}
           <li>
-            <h4><a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a></h4>
-            <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
+            <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a></h4>
+            <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
             <div class="prize">¥ {{ g.price }}</div>
           </li>
         {% endfor %}
@@ -129,19 +139,19 @@
       <div class="subtitle fl">
         <span>|</span>
         {% for g in type31 %}
-          <a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a>
+          <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
       <a href="/list4_1_1/" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
-      <div class="goods_banner fl"><img src="/static/images/banner04.jpg"></div>
+      <div class="goods_banner fl"><img src="{% static 'images/banner04.jpg' %}"></div>
       <ul class="goods_list fl">
         {% for g in type3 %}
           <li>
-            <h4><a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a></h4>
-            <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
+            <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a></h4>
+            <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
             <div class="prize">¥ {{ g.price }}</div>
           </li>
         {% endfor %}
@@ -162,12 +172,12 @@
     </div>
 
     <div class="goods_con clearfix">
-      <div class="goods_banner fl"><img src="/static/images/banner05.jpg"></div>
+      <div class="goods_banner fl"><img src="{% static 'images/banner05.jpg' %}"></div>
       <ul class="goods_list fl">
         {% for g in type4 %}
           <li>
-            <h4><a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a></h4>
-            <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
+            <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a></h4>
+            <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
             <div class="prize">¥ {{ g.price }}</div>
           </li>
         {% endfor %}
@@ -181,19 +191,19 @@
       <div class="subtitle fl">
         <span>|</span>
         {% for g in type51 %}
-          <a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a>
+          <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
       <a href="/list6_1_1/" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
-      <div class="goods_banner fl"><img src="/static/images/banner06.jpg"></div>
+      <div class="goods_banner fl"><img src="{% static 'images/banner06.jpg' %}"></div>
       <ul class="goods_list fl">
         {% for g in type5 %}
           <li>
-            <h4><a href="/{{ g.id }}/">{{ g.name|slice:'10' }}...</a></h4>
-            <a href="/{{ g.id }}/"><img src="/static/{{ g.pic }}"></a>
+            <h4><a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a></h4>
+            <a href="{% url 'goods:detail' g.id %}"><img src="/static/{{ g.pic }}"></a>
             <div class="prize">¥ {{ g.price }}</div>
           </li>
         {% endfor %}

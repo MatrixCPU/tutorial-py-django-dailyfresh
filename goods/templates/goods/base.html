@@ -1,4 +1,16 @@
 {% extends 'base_goods.html' %}
+
+{% block head %}
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $show_count=$('#show_count');
+          $.get("{% url 'cart:status' %}", function (data) {
+              $show_count.text(data.count);
+          });
+      });
+  </script>
+{% endblock %}
+
 {% block content %}
 
   <div class="navbar_con">

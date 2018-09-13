@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'goods.apps.GoodsConfig',
     'tinymce',
+    'cart.apps.CartConfig',
 ]
 
 MIDDLEWARE = [

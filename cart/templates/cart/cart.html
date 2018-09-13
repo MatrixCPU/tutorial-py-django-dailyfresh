@@ -1,0 +1,152 @@
+{% extends 'base_user_center.html' %}
+{% load static %}
+
+{% block head %}
+  <script>
+      function summarize() {
+          var sum = 0;
+          var count = 0;
+          $('.cart_list_td > .col07').each(function () {
+              var count_i = parseInt($(this).prev().find('.num_show.fl').val());
+              var price = $(this).siblings('.col05').text().slice(0, -1);
+              var sum_i = count_i * parseFloat(price);
+              $(this).text(sum_i.toFixed(2) + '元');
+              if ($(this).siblings('.col01').children('input').prop('checked')) {
+                  count += count_i;
+                  sum += sum_i;
+              }
+          });
+          $('#sum').text(sum.toFixed(2));
+          $('#count').text(count);
+
+      }
+
+      $(function () {
+          summarize(); // summarize on load
+
+          $('.num_show.fl').blur(function (event) {
+              var num = parseInt($(this).val());
+              var price = parseFloat($(this).prev('.col05').text());
+              var total = num * price;
+              var $current_node = $(this);
+              $current_node.next('.col07').text(total.toFixed(2) + '元');
+
+              var cart_id = $(this).closest('.cart_list_td').attr('data-cart-id');
+
+              $.getJSON("{% url 'cart:edit' %}?cart=" + cart_id + "&count=" + num, function (data) {
+                  if (data.ok === 0) {
+                      summarize();
+                  } else {
+                      $current_node.val(data.ok);
+                  }
+              })
+          });
+          $('.add.fl').click(function (event) {
+              var $num_ele = $(this).siblings('.num_show.fl');
+              var $value = parseInt($num_ele.val());
+              $num_ele.val($value + 1);
+              $num_ele.blur();
+          });
+          $('.minus.fl').click(function (event) {
+              var $num_ele = $(this).siblings('.num_show.fl');
+              var $value = parseInt($num_ele.val());
+              if ($value <= 1) {
+                  alert('请输出正确的数量！');
+              } else {
+                  $num_ele.val($value - 1);
+                  $num_ele.blur();
+              }
+          });
+          /* remove item from shopping cart */
+          $('.cart_list_td .col08').click(function () {
+              var $current_item = $(this).parent();
+              var cart_id = $current_item.attr('data-cart-id');
+              var del_confirm = confirm('确定移除此商品？');
+              if (del_confirm) {
+                  $.getJSON("{% url 'cart:delete' %}?cart=" + cart_id, function (data) {
+                      if (data.ok === 0) {
+                          $current_item.remove();
+                          summarize();
+                      }
+                  });
+              }
+          });
+
+          /* checkbox operation */
+          var $total_checkbox = $('ul.settlements > li.col01 > input:checkbox');
+          var $checkbox_list = $('.cart_list_td > li.col01 > input:checkbox');
+          var $check_text = $('ul.settlements > li.col02');
+          $checkbox_list.click(function (event) {
+              var $current_node = $(this);
+              if ($current_node.prop('checked')) {
+                  if ($checkbox_list.filter(':checked').length === $checkbox_list.length) {
+                      $total_checkbox.prop('checked', true);
+                      $check_text.text('全不选');
+                  }
+
+              } else {
+                  $total_checkbox.prop('checked', false);
+                  $check_text.text('全选');
+              }
+              /* recalc sum */
+              summarize();
+          });
+          $total_checkbox.click(function (event) {
+              if ($total_checkbox.is(':checked')) {
+                  $checkbox_list.prop('checked', true);
+                  $check_text.text('全不选');
+              } else {
+                  $checkbox_list.prop('checked', false);
+                  $check_text.text('全选');
+              }
+              summarize();
+          });
+
+          $check_text.click(function () {
+              $total_checkbox.click();
+          });
+      });
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="total_count">全部商品<em>0</em>件</div>
+  <ul class="cart_list_th clearfix">
+    <li class="col01">商品名称</li>
+    <li class="col02">商品单位</li>
+    <li class="col03">商品价格</li>
+    <li class="col04">数量</li>
+    <li class="col05">小计</li>
+    <li class="col06">操作</li>
+  </ul>
+
+  {% for item in carts %}
+    <ul class="cart_list_td clearfix" data-cart-id="{{ item.id }}">
+      <li class="col01"><input type="checkbox" name="" checked></li>
+      <li class="col02">
+        <a href="{% url 'goods:detail' item.goods.id %}">
+          <img src="/static/{{ item.goods.pic }}">
+        </a>
+      </li>
+      <li class="col03">{{ item.goods.name }}<br><em>库存：{{ item.goods.in_stock }}</em></li>
+      <li class="col04">{{ item.goods.unit }}</li>
+      <li class="col05">{{ item.goods.price }}元</li>
+      <li class="col06">
+        <div class="num_add">
+          <a href="javascript:;" class="minus fl">-</a>
+          <input type="text" class="num_show fl" value="{{ item.count }}">
+          <a href="javascript:;" class="add fl">+</a>
+        </div>
+      </li>
+      <li class="col07">25.80元</li>
+      <li class="col08"><a href="javascript:;">删除</a></li>
+    </ul>
+  {% endfor %}
+
+  <ul class="settlements">
+    <li class="col01"><input type="checkbox" name="" checked=""></li>
+    <li class="col02">全选</li>
+    <li class="col03">合计(不含运费)：<span>¥</span><em id="sum">0.00</em><br>共计<b id="count">0</b>件商品</li>
+    <li class="col04"><a href="place_order.html">去结算</a></li>
+  </ul>
+{% endblock %}

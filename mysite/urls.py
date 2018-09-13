@@ -21,4 +21,5 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('', include('goods.urls')),
+    path('cart/', include('cart.urls')),
 ]
