@@ -2,6 +2,11 @@
 
 {% block head %}
   {{ block.super }}
+  <style type="text/css">
+    span.show_stock {
+      margin-left: 2em;
+    }
+  </style>
   <script>
       $(function () {
           $('.num_show').blur(function (event) {
@@ -12,17 +17,21 @@
           });
           $('.add.fr').click(function (event) {
               var $num_ele = $('.num_show');
-              var $value = parseInt($num_ele.val());
-              $num_ele.val($value + 1);
-              $num_ele.blur();
+              var value = parseInt($num_ele.val());
+              if (value >= $(this).attr('data-upper-limit')) {
+                  alert('输入数量超出库存！');
+              } else {
+                  $num_ele.val(value + 1);
+                  $num_ele.blur();
+              }
           });
           $('.minus.fr').click(function (event) {
               var $num_ele = $('.num_show');
-              var $value = parseInt($num_ele.val());
-              if ($value <= 1) {
+              var value = parseInt($num_ele.val());
+              if (value <= 1) {
                   alert('请输出正确的数量！');
               } else {
-                  $num_ele.val($value - 1);
+                  $num_ele.val(value - 1);
                   $num_ele.blur();
               }
           });
@@ -35,7 +44,7 @@
               } else {
                   var num = parseInt($('.num_show').val());
                   $.get("{% url 'cart:add' %}?goods={{ g.id }}&count=" + num, function (data) {
-                      location.href = '/order/?cart_id=' + data.cart_id;
+                      location.href = "{% url 'order:index' %}?cart=" + data.cart_id;
                   });
               }
           });
@@ -53,12 +62,13 @@
       <div class="prize_bar">
         <span class="show_pirze">¥<em id="gprice">{{ g.price }}</em></span>
         <span class="show_unit">单  位：{{ g.unit }}</span>
+        <span class="show_stock">库  存：{{ g.in_stock }}</span>
       </div>
       <div class="goods_num clearfix">
         <div class="num_name fl">数 量：</div>
         <div class="num_add fl">
           <input type="text" class="num_show fl" value="1">
-          <a href="javascript:;" class="add fr">+</a>
+          <a href="javascript:;" class="add fr" data-upper-limit="{{ g.in_stock }}">+</a>
           <a href="javascript:;" class="minus fr">-</a>
         </div>
       </div>

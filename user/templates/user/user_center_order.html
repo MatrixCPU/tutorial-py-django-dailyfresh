@@ -1,86 +1,101 @@
 {% extends 'base_user_center.html' %}
 {% load static %}
 
+{% block head %}
+  <style type="text/css">
+    .pagenation .disabled {
+      background-color: #fff;
+    }
+  </style>
+  <script type="text/javascript">
+      function summarize() {
+          $('.order_list_table .order_goods_list > .col04').each(function () {
+              var $this = $(this);
+              var price = $(this).siblings('.col02').find('em').text();
+              var price_index = parseInt(price.indexOf('元'));
+              price = parseFloat(price.slice(0, price_index));
+              var count = parseInt($this.siblings('.col03').text());
+              var total_price = price * count;
+              $this.text(total_price.toFixed(2) + '元');
+          });
+      }
+
+      $(document).ready(function () {
+          summarize();
+      });
+  </script>
+{% endblock %}
+
 {% block content %}
-<div class="main_con clearfix">
-      <div class="left_menu_con clearfix">
-        <h3>用户中心</h3>
-        <ul>
-          <li><a href="{% url 'user:info' %}">· 个人信息</a></li>
-          <li><a href="{% url 'user:order' %}" class="active">· 全部订单</a></li>
-          <li><a href="{% url 'user:address' %}">· 收货地址</a></li>
+  <div class="main_con clearfix">
+    <div class="left_menu_con clearfix">
+      <h3>用户中心</h3>
+      <ul>
+        <li><a href="{% url 'user:info' %}">· 个人信息</a></li>
+        <li><a href="{% url 'user:order' %}" class="active">· 全部订单</a></li>
+        <li><a href="{% url 'user:address' %}">· 收货地址</a></li>
+      </ul>
+    </div>
+    <div class="right_content clearfix">
+      <h3 class="common_title2">全部订单</h3>
+      {% for order in orders %}
+        <ul class="order_list_th w978 clearfix">
+          <li class="col01">{{ order.date }}</li>
+          <li class="col02">订单号：{{ order.id }}</li>
+          <li class="col02 stress">{% if order.is_paid %}已支付{% else %}未支付{% endif %}</li>
         </ul>
+
+        <table class="order_list_table w980">
+          <tbody>
+          <tr>
+            <td width="55%">
+              {% for orderitem in order.orderitem_set.all %}
+                <ul class="order_goods_list clearfix">
+                  <li class="col01">
+                    <a href="{% url 'goods:detail' orderitem.id %}"><img src="/static/{{ orderitem.item.pic }}"></a>
+                  </li>
+                  <li class="col02">嘎啦苹果嘎啦苹果<em>{{ orderitem.price }}元/{{ orderitem.item.unit }}</em></li>
+                  <li class="col03">{{ orderitem.count }}</li>
+                  <li class="col04">11.80元</li>
+                </ul>
+              {% endfor %}
+            </td>
+            <td width="15%">{{ order.total }}元</td>
+            {% if order.is_paid %}
+              <td width="15%">已付款</td>
+              <td width="15%"><a href="#" class="oper_btn">查看物流</a></td>
+            {% else %}
+              <td width="15%">待付款</td>
+              <td width="15%"><a href="#" class="oper_btn">去付款</a></td>
+            {% endif %}
+          </tr>
+          </tbody>
+        </table>
+      {% endfor %}
+
+      <div class="pagenation">
+        {% if orders.has_previous %}
+          <a href="{% url 'user:order' %}?page=1">&lt;&lt;</a>
+          <a href="{% url 'user:order' %}?page={{ orders.previous_page_number }}">&lt;</a>
+        {% else %}
+          <a href="#" class="disabled">&lt;&lt;</a>
+          <a href="#" class="disabled">&lt;</a>
+        {% endif %}
+        {% for i in paginator.page_range %}
+          {% if i == orders.number %}
+            <a href="#" class="active">{{ orders.number }}</a>
+          {% else %}
+            <a href="{% url 'user:order' %}?page={{ i }}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if orders.has_next %}
+          <a href="{% url 'user:order' %}?page={{ orders.next_page_number }}">&gt;</a>
+          <a href="{% url 'user:order' %}?page=-1">&gt;&gt;</a>
+        {% else %}
+          <a href="#" class="disabled">&gt;</a>
+          <a href="#" class="disabled">&gt;&gt;</a>
+        {% endif %}
       </div>
-		<div class="right_content clearfix">
-				<h3 class="common_title2">全部订单</h3>
-				<ul class="order_list_th w978 clearfix">
-					<li class="col01">2016-8-21 17:36:24</li>
-					<li class="col02">订单号：56872934</li>
-					<li class="col02 stress">未支付</li>		
-				</ul>
-
-				<table class="order_list_table w980">
-					<tbody>
-						<tr>
-							<td width="55%">
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
-							</td>
-							<td width="15%">33.60元</td>
-							<td width="15%">待付款</td>
-							<td width="15%"><a href="#" class="oper_btn">去付款</a></td>
-						</tr>
-					</tbody>
-				</table>
-				
-				<ul class="order_list_th w978 clearfix">
-					<li class="col01">2016-8-21 17:36:24</li>
-					<li class="col02">订单号：56872934</li>
-					<li class="col02 stress">已支付</li>			
-				</ul>
-				<table class="order_list_table w980">
-					<tbody>
-						<tr>
-							<td width="55%">
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
-							</td>
-							<td width="15%">33.60元</td>
-							<td width="15%">已付款</td>
-							<td width="15%"><a href="#" class="oper_btn">查看物流</a></td>
-						</tr>
-					</tbody>
-				</table>
-
-				<div class="pagenation">
-					<a href="#">&lt;上一页</a>
-					<a href="#" class="active">1</a>
-					<a href="#">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-					<a href="#">5</a>
-					<a href="#">下一页&gt;</a>
-				</div>
-		</div>
-</div>
+    </div>
+  </div>
 {% endblock %}

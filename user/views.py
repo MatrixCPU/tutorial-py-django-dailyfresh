@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import JsonResponse, HttpResponseRedirect
+from django.core.paginator import Paginator
 
 from .models import User, Contact
 from . import decorators
 from goods.models import GoodsItem
+from order.models import Order, OrderItem
 
 
 def register(request):
@@ -99,8 +101,17 @@ def info(request):
 
 @decorators.login_required
 def order(request):
+    user_id = request.session['user_id']
+    order_list = Order.objects.filter(user_id=user_id).order_by('-id')
+    paginator = Paginator(order_list, 2)
+    page = int(request.GET.get('page', '1'))
+    if page == -1:
+        page = (len(order_list) - 1) // 2 + 1
+    orders = paginator.page(page)
     context = {
         'title': '用户订单',
+        'orders': orders,
+        'paginator': paginator
     }
     return render(request, 'user/user_center_order.html', context=context)
 
@@ -109,7 +120,7 @@ def order(request):
 def address(request):
     user = get_object_or_404(User, id=request.session.get('user_id'))
     contact = user.contact_set.order_by('id').all()
-    if contact:
+    if len(contact):
         contact = contact[0]
     else:
         contact = Contact(user=user, name='', address='', zip_code='', phone='')

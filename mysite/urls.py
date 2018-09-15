@@ -22,4 +22,5 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path('', include('goods.urls')),
     path('cart/', include('cart.urls')),
+    path('order/', include('order.urls')),
 ]

@@ -24,7 +24,7 @@ class GoodsItem(models.Model):
     click = models.IntegerField(default=0)
     brief = models.CharField(max_length=120,null=True)
     detail = HTMLField(null=True)
-    in_stock = models.IntegerField(default=1)
+    in_stock = models.IntegerField(default=10)
     is_promoted = models.BooleanField(default=False)
 
     def __str__(self):
