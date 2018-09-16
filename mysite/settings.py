@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'tinymce',
     'cart.apps.CartConfig',
     'order.apps.OrderConfig',
+    'haystack',  # full text search
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,16 @@ TINYMCE_DEFAULT_CONFIG = {
     'width': 600,
     'height': 400,
 }
+
+# full text search with haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+# generate search index automatically
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS = 'OR'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 18

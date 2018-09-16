@@ -73,3 +73,13 @@ def detail(request, id):
         goods_ids = current_id
     response.set_cookie('goods_ids', goods_ids)
     return response
+
+
+from haystack.views import SearchView
+
+
+class GoodsSearchView(SearchView):
+    def extra_context(self):
+        context = super().extra_context()
+        context['title'] = '搜索'
+        return context
