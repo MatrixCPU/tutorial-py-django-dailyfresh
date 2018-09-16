@@ -17,9 +17,10 @@ def order(request):
         try:
             order = Order()
             order.user_id = request.session['user_id']
-            order.total = float(request.POST['total_fee'])
+            # never trust important data from the client side
+            order.total, total = 0, 0
             order.address = request.POST['address']
-            order.save()
+
             cart_ids = [int(_) for _ in request.POST['cart_ids'].split(',')]
             for cart_id in cart_ids:
                 order_item = OrderItem()
@@ -31,9 +32,12 @@ def order(request):
                     item.save()
                     # save item in order
                     order_item.item_id = item.id
-                    order_item.price = item.price
-                    order_item.count = cart.count
+                    price = item.price
+                    count = cart.count
+                    order_item.price = price
+                    order_item.count = count
                     order_item.save()
+                    order.total = order.total + price * count
                     # delete cart
                     cart.delete()
                 else:
@@ -41,6 +45,8 @@ def order(request):
                     resp = HttpResponse(status=303)
                     resp['Location'] = reverse('cart:index')
                     return resp
+            # you may need to add transportation fee
+            order.save()
         except Exception as e:
             print('==========%s' % e)
             transaction.savepoint_rollback(transaction_id)

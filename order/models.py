@@ -4,7 +4,7 @@ from django.db import models
 class Order(models.Model):
     id = models.AutoField(max_length=20, primary_key=True)
     user = models.ForeignKey('user.User', on_delete=models.PROTECT)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     is_paid = models.BooleanField(default=False)
     total = models.DecimalField(max_digits=7, decimal_places=2)
     # address = models.ForeignKey('user.Contact', on_delete=models.PROTECT)
