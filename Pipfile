@@ -8,6 +8,9 @@ mysqlclient = "*"
 django-tinymce = "*"
 pillow = "*"
 django = "*"
+whoosh = "*"
+django-haystack = "*"
+jieba = "*"
 
 [dev-packages]
 ipython = "*"
