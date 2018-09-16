@@ -42,11 +42,13 @@ def add(request):
         return redirect(next)
 
 
-@decorators.login_required
 def status(request):
     '''count: return number of categories in the cart'''
-    user_id = request.session.get('user_id', '')
-    count = Cart.objects.filter(user_id=user_id).count()
+    try:
+        user_id = request.session.get('user_id', '')
+        count = Cart.objects.filter(user_id=user_id).count()
+    except Exception as e:
+        count = 0
     return JsonResponse({'count': count})
 
 
