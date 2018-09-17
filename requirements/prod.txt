@@ -1,0 +1,8 @@
+django-haystack==2.8.1
+django-tinymce==2.7.0
+django==2.1.5
+jieba==0.39
+mysqlclient==1.3.14
+pillow==5.4.1
+pytz==2018.9
+whoosh==2.7.4
