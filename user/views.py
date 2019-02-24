@@ -93,9 +93,8 @@ def info(request):
     goods_list = []
     if goods_ids:
         goods_id_list = goods_ids.split(',')
-        # TODO: query all IDs in a batch
-        for _ in goods_id_list:
-            goods_list.append(GoodsItem.objects.get(id=int(_)))
+        goods_id_list = [int(_) for _ in goods_id_list]
+        goods_list = GoodsItem.objects.filter(id__in=goods_id_list)
 
     context = {
         'title': '用户中心',
@@ -134,5 +133,5 @@ def address(request):
         contact.zip_code = request.POST.get('zip_code')
         contact.phone = request.POST.get('phone')
         contact.save()
-    context = {'title': '用户中心', 'contact': contact}
+    context = {'title': '收货地址', 'contact': contact}
     return render(request, 'user/user_center_site.html', context=context)
