@@ -23,12 +23,12 @@
         <h1>全部商品分类</h1>
         <span></span>
         <ul class="subnav">
-          <li><a href="/list1_1_1/" class="fruit">新鲜水果</a></li>
-          <li><a href="/list2_1_1/" class="seafood">海鲜水产</a></li>
-          <li><a href="/list3_1_1/" class="meet">猪牛羊肉</a></li>
-          <li><a href="/list4_1_1/" class="egg">禽类蛋品</a></li>
-          <li><a href="/list5_1_1/" class="vegetables">新鲜蔬菜</a></li>
-          <li><a href="/list6_1_1/" class="ice">速冻食品</a></li>
+          <li><a href="{% url 'goods:list' 1 %}" class="fruit">新鲜水果</a></li>
+          <li><a href="{% url 'goods:list' 2 %}" class="seafood">海鲜水产</a></li>
+          <li><a href="{% url 'goods:list' 3 %}" class="meet">猪牛羊肉</a></li>
+          <li><a href="{% url 'goods:list' 4 %}" class="egg">禽类蛋品</a></li>
+          <li><a href="{% url 'goods:list' 5 %}" class="vegetables">新鲜蔬菜</a></li>
+          <li><a href="{% url 'goods:list' 6 %}" class="ice">速冻食品</a></li>
         </ul>
       </div>
       <ul class="navlist fl">
@@ -62,7 +62,7 @@
 
     <div class="pagenation">
       {% if page.has_previous %}
-        <a href="/search/?q={{ query }}&page={{ page.previous_page_number }}">
+        <a href="{% url 'goods:search' %}?q={{ query }}&page={{ page.previous_page_number }}">
           &lt;上一页
         </a>
       {% endif %}
@@ -71,12 +71,12 @@
         {% if pindex == page.number %}
           <a href="#" class="active">{{ pindex }}</a>
         {% else %}
-          <a href="/search/?q={{ query }}&page={{ pindex }}">{{ pindex }}</a>
+          <a href="{% url 'goods:search' %}?q={{ query }}&page={{ pindex }}">{{ pindex }}</a>
         {% endif %}
       {% endfor %}
 
       {% if page.has_next %}
-        <a href="/search/?q={{ query }}&page={{ page.next_page_number }}">下一页&gt;</a>
+        <a href="{% url 'goods:search' %}?q={{ query }}&page={{ page.next_page_number }}">下一页&gt;</a>
       {% endif %}
     </div>
 

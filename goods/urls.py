@@ -5,7 +5,7 @@ app_name = 'goods'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    re_path(r'^list(\d+)_(\d+)_(\d+)/$', views.list, name='list'),
+    path('lists/<int:category_id>/', views.list, name='list'),
     path('<int:id>/', views.detail, name='detail'),
-    path('search/', views.GoodsSearchView()),
+    path('search/', views.GoodsSearchView(), name='search'),
 ]

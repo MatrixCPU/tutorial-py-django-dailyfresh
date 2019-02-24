@@ -422,3 +422,6 @@ dmypy.json
 
 # direnv
 .envrc
+
+# whoosh full index
+whoosh_index/

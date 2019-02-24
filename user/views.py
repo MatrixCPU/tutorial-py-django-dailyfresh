@@ -90,11 +90,12 @@ def info(request):
 
     # get recent visited items
     goods_ids = request.COOKIES.get('goods_ids', '')
-    goods_id_list = goods_ids.split(',')
     goods_list = []
-    # TODO: query all IDs in a batch
-    for _ in goods_id_list:
-        goods_list.append(GoodsItem.objects.get(id=int(_)))
+    if goods_ids:
+        goods_id_list = goods_ids.split(',')
+        # TODO: query all IDs in a batch
+        for _ in goods_id_list:
+            goods_list.append(GoodsItem.objects.get(id=int(_)))
 
     context = {
         'title': '用户中心',

@@ -36,24 +36,32 @@ def index(request):
     return render(request, 'goods/index.html', context)
 
 
-def list(request, pk, pindex, sort):
-    # TODO: query parameter
-    typeinfo = GoodsCategory.objects.get(pk=int(pk))
+def list(request, category_id):
+    # deprecated sort_key: 1 id, 2 price, 3 click
+    page_num = int(request.GET.get('page', 1))
+    sort_key = request.GET.get('sort', 'id')
+    typeinfo = GoodsCategory.objects.get(pk=int(category_id))
     news = typeinfo.goodsitem_set.order_by('-id')[0:2]
-    if sort == '1':  # 默认，最新
-        goods_list = GoodsItem.objects.filter(category_id=int(pk)).order_by('-id')
-    elif sort == '2':  # 价格
-        goods_list = GoodsItem.objects.filter(category_id=int(pk)).order_by('-price')
-    elif sort == '3':  # 人气，点击量
-        goods_list = GoodsItem.objects.filter(category_id=int(pk)).order_by('-click')
+    if sort_key == 'id' or not sort_key:  # 默认，最新
+        goods_list = GoodsItem.objects.filter(category_id=int(category_id)).order_by(
+            '-id'
+        )
+    elif sort_key == 'price':  # 价格
+        goods_list = GoodsItem.objects.filter(category_id=int(category_id)).order_by(
+            '-price'
+        )
+    elif sort_key == 'click':  # 人气，点击量
+        goods_list = GoodsItem.objects.filter(category_id=int(category_id)).order_by(
+            '-click'
+        )
     paginator = Paginator(goods_list, 10)
-    page = paginator.page(int(pindex))
+    page = paginator.page(int(page_num))
     context = {
         'title': typeinfo.name,
         'page': page,
         'paginator': paginator,
         'typeinfo': typeinfo,
-        'sort': sort,
+        'sort': sort_key,
         'news': news,
     }
     return render(request, 'goods/list.html', context)
@@ -89,6 +97,7 @@ from haystack.views import SearchView
 
 
 class GoodsSearchView(SearchView):
+    # default template for search: <app_name>/templates/search/search.html
     def extra_context(self):
         context = super().extra_context()
         context['title'] = '搜索'

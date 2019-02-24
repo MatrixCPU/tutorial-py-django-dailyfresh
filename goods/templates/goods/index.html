@@ -64,7 +64,7 @@
           <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
-      <a href="/list1_1_1/" class="goods_more fr" id="fruit_more">查看更多 ></a>
+      <a href="{% url 'goods:list' 1 %}" class="goods_more fr" id="fruit_more">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
@@ -90,7 +90,7 @@
           <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
-      <a href="/list2_1_1/" class="goods_more fr">查看更多 ></a>
+      <a href="{% url 'goods:list' 2 %}" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
@@ -116,7 +116,7 @@
           <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
-      <a href="/list3_1_1/" class="goods_more fr">查看更多 ></a>
+      <a href="{% url 'goods:list' 3 %}" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
@@ -142,7 +142,7 @@
           <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
-      <a href="/list4_1_1/" class="goods_more fr">查看更多 ></a>
+      <a href="{% url 'goods:list' 4 %}" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
@@ -168,7 +168,7 @@
           <a href="{{ g.id }}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
-      <a href="/list5_1_1/" class="goods_more fr">查看更多 ></a>
+      <a href="{% url 'goods:list' 5 %}" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">
@@ -194,7 +194,7 @@
           <a href="{% url 'goods:detail' g.id %}">{{ g.name|slice:'10' }}...</a>
         {% endfor %}
       </div>
-      <a href="/list6_1_1/" class="goods_more fr">查看更多 ></a>
+      <a href="{% url 'goods:list' 6 %}" class="goods_more fr">查看更多 ></a>
     </div>
 
     <div class="goods_con clearfix">

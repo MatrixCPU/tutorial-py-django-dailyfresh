@@ -132,6 +132,7 @@ TINYMCE_DEFAULT_CONFIG = {'theme': 'advanced', 'width': 600, 'height': 400}
 # full text search with haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
+        # Load engine from project root, which uses whooshengine based on jieba
         'ENGINE': 'whoosh_backend.WhooshEngine',
         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     }
