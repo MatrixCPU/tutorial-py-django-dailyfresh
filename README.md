@@ -1,7 +1,7 @@
 ## 天天生鲜项目
 
 ### 部署
-Modify `settings.py` and setup database. Default mysql database called 'dailyfresh', user 'dailyfresh' with password 'dailyfresh'
+Copy `.env-example` as `.env` and configure the app in `.env`.
 
 ```shell
 # install required pkgs
@@ -23,4 +23,4 @@ python manage.py rebuild_index
 - [x] Whoosh配合Jieba分词支持中文全文搜索，避免直接修改包源码
 - [ ] 合并多个记录查询的多次查询为一次（使用`fieldname__in`）
 - [ ] 交易记录直接记录用户信息，而不是使用外键，避免用户信息变更导致交易记录亦随之变化
-- [ ] Load settings from `.env` by `python-dotenv`
+- [x] Load settings from `.env` by `python-dotenv`

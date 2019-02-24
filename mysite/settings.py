@@ -11,18 +11,23 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'c65iajv344#8fy949zo@eu+(-5)4f$pnq*u)4a5u9zdbj=4b0n'
+SECRET_KEY = (
+    os.environ.get('SECRET_KEY') or 'c65iajv344#8fy949zo@eu+(-5)4f$pnq*u)4a5u9zdbj=4b0n'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ.get('DEBUG'):
+if os.environ.get('DEBUG').lower() in ['true', 'on', '1']:
     print('DEBUG: True')
     DEBUG = True
     # When not specified, ALLOW_HOSTS defaults to:
@@ -86,11 +91,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'PORT': 3306,
-        'USER': 'dailyfresh',
-        'PASSWORD': 'dailyfresh',
-        'NAME': 'dailyfresh',
+        'HOST': os.environ.get('DATABASE_HOST') or '127.0.0.1',
+        'PORT': int(os.environ.get('DATABASE_PORT')) or 3306,
+        'USER': os.environ.get('DATABASE_USER') or 'dailyfresh',
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD') or 'dailyfresh',
+        'NAME': os.environ.get('DATABASE_NAME') or 'dailyfresh',
     }
 }
 
@@ -124,7 +129,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT') or os.path.join(BASE_DIR, 'static')
 # MEDIA_ROOT = '/var/www/dailyfresh/static'
 
 TINYMCE_DEFAULT_CONFIG = {'theme': 'advanced', 'width': 600, 'height': 400}
