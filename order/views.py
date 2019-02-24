@@ -18,7 +18,7 @@ def order(request):
             order = Order()
             order.user_id = request.session['user_id']
             # never trust important data from the client side
-            order.total, total = 0, 0
+            order.total = 0
             order.address = request.POST['address']
 
             cart_ids = [int(_) for _ in request.POST['cart_ids'].split(',')]
@@ -28,24 +28,22 @@ def order(request):
                 cart = Cart.objects.get(id=cart_id)
                 item = cart.goods
                 if item.in_stock >= cart.count:
+                    # move items from Cart into OrderItem
                     item.in_stock = item.in_stock - cart.count
                     item.save()
-                    # save item in order
                     order_item.item_id = item.id
-                    price = item.price
-                    count = cart.count
-                    order_item.price = price
-                    order_item.count = count
+                    order_item.price = item.price
+                    order_item.count = cart.count
                     order_item.save()
-                    order.total = order.total + price * count
+                    order.total = order.total + order_item.price * order_item.count
                     # delete cart
                     cart.delete()
                 else:
                     transaction.savepoint_rollback(transaction_id)
-                    resp = HttpResponse(status=303)
+                    resp = HttpResponse(status=303)  # 303, See Other
                     resp['Location'] = reverse('cart:index')
                     return resp
-            # you may need to add transportation fee
+            # TODO: you may need to add transportation fee
             order.save()
         except Exception as e:
             print('==========%s' % e)
@@ -66,6 +64,6 @@ def order(request):
             'carts': carts,
             'user': user,
             'contact': contact,
-            'cart_ids': ','.join(cart_ids)
+            'cart_ids': ','.join(cart_ids),
         }
         return render(request, 'order/place_order.html', context)

@@ -22,7 +22,7 @@ class GoodsItem(models.Model):
     is_deleted = models.BooleanField(default=False)
     unit = models.CharField(max_length=10, default='500g')
     click = models.IntegerField(default=0)
-    brief = models.CharField(max_length=120,null=True)
+    brief = models.CharField(max_length=120, null=True)
     detail = HTMLField(null=True)
     in_stock = models.IntegerField(default=10)
     is_promoted = models.BooleanField(default=False)

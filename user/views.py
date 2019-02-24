@@ -65,7 +65,12 @@ def login(request):
             else:
                 error = 1
         # pass username and password back once failed to login
-        context = {'title': '用户登录', 'error': error, 'username': username, 'password': password}
+        context = {
+            'title': '用户登录',
+            'error': error,
+            'username': username,
+            'password': password,
+        }
         return render(request, 'user/login.html', context=context)
 
     username = request.COOKIES.get('username', '')
@@ -87,6 +92,7 @@ def info(request):
     goods_ids = request.COOKIES.get('goods_ids', '')
     goods_id_list = goods_ids.split(',')
     goods_list = []
+    # TODO: query all IDs in a batch
     for _ in goods_id_list:
         goods_list.append(GoodsItem.objects.get(id=int(_)))
 
@@ -108,11 +114,7 @@ def order(request):
     if page == -1:
         page = (len(order_list) - 1) // 2 + 1
     orders = paginator.page(page)
-    context = {
-        'title': '用户订单',
-        'orders': orders,
-        'paginator': paginator
-    }
+    context = {'title': '用户订单', 'orders': orders, 'paginator': paginator}
     return render(request, 'user/user_center_order.html', context=context)
 
 
@@ -131,8 +133,5 @@ def address(request):
         contact.zip_code = request.POST.get('zip_code')
         contact.phone = request.POST.get('phone')
         contact.save()
-    context = {
-        'title': '用户中心',
-        'contact': contact,
-    }
+    context = {'title': '用户中心', 'contact': contact}
     return render(request, 'user/user_center_site.html', context=context)

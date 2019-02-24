@@ -8,10 +8,7 @@ from .models import Cart
 def cart(request):
     user_id = request.session.get('user_id', '')
     carts = Cart.objects.filter(user_id=user_id)
-    context = {
-        'title': '购物车',
-        'carts': carts,
-    }
+    context = {'title': '购物车', 'carts': carts}
     return render(request, 'cart/cart.html', context)
 
 
@@ -37,11 +34,14 @@ def add(request):
         count = Cart.objects.filter(user_id=user_id).count()
         return JsonResponse({'cart_id': cart.id, 'count': count})
     else:
-        # TODO: Use ajax request when add goods into cart
+        # TODO:
+        #   1. Use ajax request when adding goods into cart
+        #   2. Safety check for next URL
         next = request.META.get('HTTP_REFERER', None) or reverse('cart:index')
         return redirect(next)
 
 
+@decorators.login_required
 def status(request):
     '''count: return number of categories in the cart'''
     try:
